@@ -6,8 +6,7 @@ using std::uniform_real_distribution;
 
 MonteCarloPi::MonteCarloPi(int trials)
 	: trials_(trials)
-{
-}
+{ }
 
 int MonteCarloPi::SimulateInCircle(void)
 {
@@ -39,7 +38,7 @@ int MonteCarloPi::SimulateOverLine(const double length, const double distance)
 	double halfLength = length / 2;
 
 	uniform_real_distribution<double> uniformThrow(0, halfDistance);
-	uniform_real_distribution<double> uniformAngle(0, std::_Pi);
+	uniform_real_distribution<double> uniformAngle(0, std::_Pi/2);
 	random_device rnd;
 
 	int overTotal = 0;

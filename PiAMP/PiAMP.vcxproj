@@ -76,11 +76,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="IterativePi.h" />
     <ClInclude Include="MonteCarloPi.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="IterativePi.cpp" />
     <ClCompile Include="MonteCarloPi.cpp" />
     <ClCompile Include="PiAMP.cpp" />
     <ClCompile Include="stdafx.cpp">
