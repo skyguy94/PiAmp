@@ -18,31 +18,41 @@ int main(int argc, char* argv[])
 	double calculated = ComputePiWithGaussLegendre();
 	cout << setw(15) << left << "Calculated:" << setprecision(26) << setw(26) << calculated << std::endl;
 
-	auto t = create_task([&values]() -> int
+	auto t = create_task([calculated]() -> double
 		{
-			parallel_invoke(
-			 [&values] {values.push_back(ComputePiWithAreas()); },
-			 [&values] { values.push_back(ComputePiWithAreas()); },
-			 [&values] { values.push_back(ComputePiWithAreas()); },
-			 [&values] { values.push_back(ComputePiWithAreas()); },
-			 [&values] { values.push_back(ComputePiWithAreas()); },
-			 [&values] { values.push_back(ComputePiWithNeedles()); },
-			 [&values] { values.push_back(ComputePiWithNeedles()); },
-			 [&values] { values.push_back(ComputePiWithNeedles()); },
-			 [&values] { values.push_back(ComputePiWithNeedles()); },
-			 [&values] { values.push_back(ComputePiWithNeedles()); }
-			);
+			double mean = 0;
+			double error = 100;
+			vector<double> values;
+			
+			while (error > .05)
+			{
+				parallel_invoke(
+				 [&values] { values.push_back(ComputePiWithAreas()); },
+				 [&values] { values.push_back(ComputePiWithAreas()); },
+				 [&values] { values.push_back(ComputePiWithAreas()); },
+				 [&values] { values.push_back(ComputePiWithAreas()); },
+				 [&values] { values.push_back(ComputePiWithAreas()); },
+				 [&values] { values.push_back(ComputePiWithNeedles()); },
+				 [&values] { values.push_back(ComputePiWithNeedles()); },
+				 [&values] { values.push_back(ComputePiWithNeedles()); },
+				 [&values] { values.push_back(ComputePiWithNeedles()); },
+				 [&values] { values.push_back(ComputePiWithNeedles()); }
+				);
 
-			return 0;
+				double result = parallel_reduce(begin(values), end(values), 0, std::plus<double>());
+				mean = result / values.size();
+				error = abs((mean - calculated) / calculated) * 100;
+				
+				parallel_sort(begin(values), end(values));
+				parallel_for_each(begin(values), end(values), [](double i){ cout << setw(15) << left << "Experimental:" << setprecision(26) << setw(26) << i << std::endl; });
+				cout << "Error (%): " << setprecision(3) << error << std::endl;
+			}
+
+			return mean;
 		});
 	
-	t.then([&values, calculated](int _)
+	t.then([calculated](double mean)
 	{
-		double result = parallel_reduce(begin(values), end(values), 0, std::plus<double>());
-		parallel_sort(begin(values), end(values));
-		parallel_for_each(begin(values), end(values), [](double i){ cout << setw(15) << left << "Experimental:" << setprecision(26) << setw(26) << i << std::endl; });
-
-		double mean = result / values.size();
 		double error =  (abs((mean - calculated)) / calculated) * 100;
 
 		cout << setprecision(26) << "Mean: " << mean << " Error (%): " << setprecision(3) << error << std::endl;
