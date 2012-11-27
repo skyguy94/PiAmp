@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "montecarlopi.h"
 #include "IterativePi.h"
+#include <algorithm>
+#include <Windows.h>
 
 using namespace std;
 using namespace concurrency;
@@ -13,35 +15,43 @@ int main(int argc, char* argv[])
 {
 	std::vector<double> values;
 
- //parallel_invoke(
-	// [&values] {values.push_back(ComputePiWithNeedles()); },
-	// [&values] { values.push_back(ComputePiWithNeedles()); },
-	// [&values] { values.push_back(ComputePiWithNeedles()); },
-	// [&values] { values.push_back(ComputePiWithNeedles()); },
-	// [&values] { values.push_back(ComputePiWithNeedles()); },
-	// [&values] { values.push_back(ComputePiWithNeedles()); },
-	// [&values] { values.push_back(ComputePiWithNeedles()); },
-	// [&values] { values.push_back(ComputePiWithNeedles()); },
-	// [&values] { values.push_back(ComputePiWithNeedles()); }
-	// );
+	double calculated = ComputePiWithGaussLegendre();
+	cout << setw(15) << left << "Calculated:" << setprecision(26) << setw(26) << calculated << std::endl;
 
-	values.push_back(ComputePiWithGaussLegendre());
-	double result = 0;
-	for(auto value : values)
+	auto t = create_task([&values]() -> int
+		{
+			parallel_invoke(
+			 [&values] {values.push_back(ComputePiWithAreas()); },
+			 [&values] { values.push_back(ComputePiWithAreas()); },
+			 [&values] { values.push_back(ComputePiWithAreas()); },
+			 [&values] { values.push_back(ComputePiWithAreas()); },
+			 [&values] { values.push_back(ComputePiWithAreas()); },
+			 [&values] { values.push_back(ComputePiWithNeedles()); },
+			 [&values] { values.push_back(ComputePiWithNeedles()); },
+			 [&values] { values.push_back(ComputePiWithNeedles()); },
+			 [&values] { values.push_back(ComputePiWithNeedles()); },
+			 [&values] { values.push_back(ComputePiWithNeedles()); }
+			);
+
+			return 0;
+		});
+	
+	t.then([&values, calculated](int _)
 	{
-		cout << setw(15) << left << "Experimental:" << setprecision(26) << setw(26) << value << std::endl;
-		result += value;
-	}
+		double result = parallel_reduce(begin(values), end(values), 0, std::plus<double>());
+		parallel_sort(begin(values), end(values));
+		parallel_for_each(begin(values), end(values), [](double i){ cout << setw(15) << left << "Experimental:" << setprecision(26) << setw(26) << i << std::endl; });
 
-	cout << setw(15) << left << "Constant:" << setprecision(26) << setw(26) << std::_Pi << std::endl;
+		double mean = result / values.size();
+		double error =  (abs((mean - calculated)) / calculated) * 100;
 
-	double mean = result / values.size();
-	double error =  (abs((mean - std::_Pi)) / std::_Pi) * 100;
+		cout << setprecision(26) << "Mean: " << mean << " Error (%): " << setprecision(3) << error << std::endl;
+	});
 
-	cout << setprecision(26) << "Mean: " << mean << " Error (%): " << setprecision(3) << error << std::endl;
+	t.wait();
 
-	char t;
-	cin >> t;
+	char c;
+	cin >> setw(1) >> c;
 }
 
 double ComputePiWithAreas()
@@ -61,6 +71,6 @@ double ComputePiWithNeedles()
 double ComputePiWithGaussLegendre()
 {
 	IterativePi itPi;
-	auto experimentalPi = itPi.ComputeWithGaussLegendre();
+	auto experimentalPi = itPi.ComputePiWithGaussLegendre();
 	return experimentalPi;
 }

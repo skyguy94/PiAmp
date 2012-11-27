@@ -2,6 +2,6 @@
 class IterativePi
 {
 public:
-	double ComputeWithGaussLegendre();
+	double ComputePiWithGaussLegendre();
 };
 

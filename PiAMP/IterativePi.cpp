@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "IterativePi.h"
 
-double IterativePi::ComputeWithGaussLegendre()
+double IterativePi::ComputePiWithGaussLegendre()
 {
 	double ai = 1.0;
 	double bi = 1.0/std::sqrt(2.0);
