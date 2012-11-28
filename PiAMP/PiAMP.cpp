@@ -12,12 +12,17 @@ int main(int argc, char* argv[])
 {
 	std::vector<double> values;
 
-//	parallel_invoke([&values] { values.push_back(ComputePiWithAreas()); });
-
-	values.push_back(ComputePiWithNeedles());
-	values.push_back(ComputePiWithNeedles());
-	values.push_back(ComputePiWithNeedles());
-	values.push_back(ComputePiWithNeedles());
+ parallel_invoke(
+	 [&values] {values.push_back(ComputePiWithNeedles()); },
+	 [&values] { values.push_back(ComputePiWithNeedles()); },
+	 [&values] { values.push_back(ComputePiWithNeedles()); },
+	 [&values] { values.push_back(ComputePiWithNeedles()); },
+	 [&values] { values.push_back(ComputePiWithNeedles()); },
+	 [&values] { values.push_back(ComputePiWithNeedles()); },
+	 [&values] { values.push_back(ComputePiWithNeedles()); },
+	 [&values] { values.push_back(ComputePiWithNeedles()); },
+	 [&values] { values.push_back(ComputePiWithNeedles()); }
+	 );
 
 	double result = 0;
 	for(auto value : values)
@@ -31,7 +36,7 @@ int main(int argc, char* argv[])
 
 	cout << setprecision(12) << "Mean: " << mean << " Error (%): " << setprecision(4) << error << " Actual: " << setprecision(12) << std::_Pi << std::endl;
 
-	string t;
+	char t;
 	cin >> t;
 }
 
@@ -44,7 +49,7 @@ double ComputePiWithAreas()
 
 double ComputePiWithNeedles()
 {
-	MonteCarloPi mcPi(30000);
-	auto experimentalPi = mcPi.ComputePiWithNeedles(3, 5);
+	MonteCarloPi mcPi(3000);
+	auto experimentalPi = mcPi.ComputePiWithNeedles(5, 6);
 	return experimentalPi;
 }

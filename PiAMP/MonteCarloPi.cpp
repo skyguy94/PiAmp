@@ -39,7 +39,7 @@ int MonteCarloPi::SimulateOverLine(const double length, const double distance)
 	double halfLength = length / 2;
 
 	uniform_real_distribution<double> uniformThrow(0, halfDistance);
-	uniform_real_distribution<double> uniformAngle;
+	uniform_real_distribution<double> uniformAngle(0, std::_Pi);
 	random_device rnd;
 
 	int overTotal = 0;
@@ -60,7 +60,6 @@ int MonteCarloPi::SimulateOverLine(const double length, const double distance)
 double MonteCarloPi::ComputePiWithNeedles(const double length, const double distance)
 {
 	auto inTotal = SimulateOverLine(length, distance);
-	double results = ((double)inTotal) / trials_;
-	double pi = (2 * length) / (distance * results);
+	double pi = (2 * length * trials_) / (distance * inTotal);
 	return pi;
 }
