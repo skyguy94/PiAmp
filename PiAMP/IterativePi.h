@@ -1,7 +1,10 @@
 #pragma once
+
+#include <mpirxx.h>
+
 class IterativePi
 {
 public:
-	double ComputePiWithGaussLegendre();
+	mpf_class ComputePiWithGaussLegendre();
 };
 

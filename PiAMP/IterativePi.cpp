@@ -1,22 +1,35 @@
 #include "stdafx.h"
 #include "IterativePi.h"
+#include <mpirxx.h>
 
-double IterativePi::ComputePiWithGaussLegendre()
+using std::cout;
+using std::unique_ptr;
+
+mpf_class IterativePi::ComputePiWithGaussLegendre()
 {
-	double ai = 1.0;
-	double bi = 1.0/std::sqrt(2.0);
-	double ti = (1.0/4.0);
-	double pi = 1.0;
+	const mpf_class one(1.0);
+	const mpf_class two(2.0);
+	const mpf_class four(4.0);
 
-	for (int i = 0; i < 25; i++)
+	mpf_class ai(one);
+	mpf_class bi(one/sqrt(two));
+	mpf_class ti(one/four);
+	mpf_class pi(one);
+
+	mpf_class tmpA, tmpB;
+
+	for (int i = 0; i < 10; i++)
 	{
-		double aOld = ai;
-		ai = (ai + bi) / 2;
-		bi = std::sqrt(aOld*bi);
-		ti = ti - (pi*std::pow(aOld - ai, 2));
-		pi = 2 * pi;
+		tmpA = (ai + bi) / two;
+		tmpB = sqrt(ai*bi);
+		ti = ti - pi*(ai - tmpA)*(ai - tmpA);
+		pi *= two;
+
+		ai = tmpA;
+		bi = tmpB;
 	}
 
-	double result = std::pow(ai + bi, 2) / (4*ti);
+	mpf_class result((ai + bi)*(ai + bi) / (four*ti));
+
 	return result;
 }

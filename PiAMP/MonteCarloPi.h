@@ -1,5 +1,7 @@
 #pragma once
 
+#include <mpirxx.h>
+
 class MonteCarloPi
 {
 private:
@@ -8,6 +10,6 @@ private:
 	int SimulateOverLine(const double length, const double distance);
 public:
 	MonteCarloPi(int trials);
-	double ComputePiWithAreas();
-	double ComputePiWithNeedles(const double length, const double distance);
+	mpf_class ComputePiWithAreas();
+	mpf_class ComputePiWithNeedles(const double length, const double distance);
 };

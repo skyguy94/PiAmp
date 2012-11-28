@@ -24,11 +24,10 @@ int MonteCarloPi::SimulateInCircle(void)
 	return inTotal;
 }
 
-double MonteCarloPi::ComputePiWithAreas(void)
+mpf_class MonteCarloPi::ComputePiWithAreas(void)
 {
 	auto inTotal = SimulateInCircle();
-	double results = ((double)inTotal) / trials_;
-	double pi = results * 4.0;
+	mpf_class pi = (mpf_class(inTotal) / mpf_class(trials_)) * 4;
 	return pi;
 }
 
@@ -56,9 +55,9 @@ int MonteCarloPi::SimulateOverLine(const double length, const double distance)
 	return overTotal;
 }
 
-double MonteCarloPi::ComputePiWithNeedles(const double length, const double distance)
+mpf_class MonteCarloPi::ComputePiWithNeedles(const double length, const double distance)
 {
 	auto inTotal = SimulateOverLine(length, distance);
-	double pi = (2 * length * trials_) / (distance * inTotal);
+	mpf_class pi = mpf_class(2 * length * trials_) / mpf_class(distance * inTotal);
 	return pi;
 }
