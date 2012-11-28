@@ -18,7 +18,7 @@ mpf_class IterativePi::ComputePiWithGaussLegendre()
 
 	mpf_class tmpA, tmpB;
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 25; i++)
 	{
 		tmpA = (ai + bi) / two;
 		tmpB = sqrt(ai*bi);

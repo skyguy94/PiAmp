@@ -5,3 +5,5 @@
 #include <iostream>
 #include <random>
 #include <iomanip>
+#include <algorithm>
+#include <mpirxx.h>
